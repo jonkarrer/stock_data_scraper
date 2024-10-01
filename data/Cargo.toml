@@ -1,0 +1,9 @@
+[package]
+name = "data"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+alpaca_api_client = { path = "../../../alpaca_api_client" }
+sqlx = {workspace = true}
+chrono = {workspace = true}
