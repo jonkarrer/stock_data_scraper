@@ -6,3 +6,5 @@ edition = "2021"
 [dependencies]
 sqlx = {workspace = true}
 anyhow = {workspace = true}
+alpaca_api_client = {workspace = true}
+chrono = {workspace = true}

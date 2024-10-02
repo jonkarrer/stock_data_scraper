@@ -1,11 +1,13 @@
 use anyhow::Result;
 
 use clap::{Parser, Subcommand};
-use database::DB;
+use database::SqliteDb;
+// use database::DB;
 
 #[derive(Subcommand)]
 pub enum DatabaseCommands {
     CreateDatabase { uri: String },
+    TestConnection { uri: String },
 }
 
 #[derive(Parser)]
@@ -17,7 +19,12 @@ pub struct DatabaseArgs {
 pub async fn run(args: &DatabaseArgs) -> Result<()> {
     match &args.subcommand {
         DatabaseCommands::CreateDatabase { uri } => {
-            DB::new(uri).await?;
+            SqliteDb::create_new(uri).await?;
+            Ok(())
+        }
+        DatabaseCommands::TestConnection { uri } => {
+            let db = SqliteDb::connect(uri).await?;
+            db.test_connection().await;
             Ok(())
         }
     }

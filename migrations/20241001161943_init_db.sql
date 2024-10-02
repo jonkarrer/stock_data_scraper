@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE IF NOT EXISTS monthly_bars (
+CREATE TABLE IF NOT EXISTS stock_bars (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_datetime TEXT NOT NULL,
     event_unix_timestamp INTEGER NOT NULL,
@@ -9,5 +9,7 @@ CREATE TABLE IF NOT EXISTS monthly_bars (
     low_price REAL NOT NULL DEFAULT 0.0,
     volume REAL NOT NULL DEFAULT 0.0,
     volume_weighted_price REAL DEFAULT 0.0,
-    stock_symbol TEXT NOT NULL
+    stock_symbol TEXT NOT NULL,
+    timeframe TEXT NOT NULL,
+    sector TEXT NOT NULL
 );

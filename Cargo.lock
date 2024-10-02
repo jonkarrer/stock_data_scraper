@@ -369,14 +369,18 @@ version = "0.1.0"
 dependencies = [
  "alpaca_api_client",
  "chrono",
+ "database",
  "sqlx",
+ "tokio",
 ]
 
 [[package]]
 name = "database"
 version = "0.1.0"
 dependencies = [
+ "alpaca_api_client",
  "anyhow",
+ "chrono",
  "sqlx",
 ]
 
