@@ -24,6 +24,10 @@ pub struct MonthlyStockBarModel {
     pub ten_week_sma: f32,
     pub ten_week_ema: f32,
     pub ten_week_rsi: f32,
+    pub ten_week_high: f32,
+    pub ten_week_low: f32,
+    pub five_week_high: f32,
+    pub five_week_low: f32,
 }
 
 pub struct MonthlyStockBarModelEntry {
@@ -46,6 +50,10 @@ pub struct MonthlyStockBarModelEntry {
     pub ten_week_sma: f32,
     pub ten_week_ema: f32,
     pub ten_week_rsi: f32,
+    pub ten_week_high: f32,
+    pub ten_week_low: f32,
+    pub five_week_high: f32,
+    pub five_week_low: f32,
 }
 
 impl MonthlyStockBarModelEntry {
@@ -61,6 +69,10 @@ impl MonthlyStockBarModelEntry {
         ten_week_sma: f32,
         ten_week_ema: f32,
         ten_week_rsi: f32,
+        ten_week_high: f32,
+        ten_week_low: f32,
+        five_week_high: f32,
+        five_week_low: f32,
     ) -> Result<Self> {
         let event_datetime = stock_bar.t.to_string();
         let open_price = stock_bar.o;
@@ -94,6 +106,10 @@ impl MonthlyStockBarModelEntry {
             ten_week_sma,
             ten_week_ema,
             ten_week_rsi,
+            ten_week_high,
+            ten_week_low,
+            five_week_high,
+            five_week_low,
         })
     }
 
@@ -125,8 +141,8 @@ impl MonthlyStockBarRepository for SqliteDb {
     async fn insert_stock_bar(&self, model_entry: &MonthlyStockBarModelEntry) -> Result<()> {
         sqlx::query(
             r#"
-            INSERT INTO monthly_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, ten_week_moving_avg, ten_week_ema, ten_week_rsi)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO monthly_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, ten_week_moving_avg, ten_week_ema, ten_week_rsi, ten_week_high, ten_week_low, five_week_high, five_week_low)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&model_entry.event_datetime)
@@ -148,6 +164,10 @@ impl MonthlyStockBarRepository for SqliteDb {
         .bind(&model_entry.ten_week_sma)
         .bind(&model_entry.ten_week_ema)
         .bind(&model_entry.ten_week_rsi)
+        .bind(&model_entry.ten_week_high)
+        .bind(&model_entry.ten_week_low)
+        .bind(&model_entry.five_week_high)
+        .bind(&model_entry.five_week_low)
         .execute(&self.pool).await?;
 
         Ok(())

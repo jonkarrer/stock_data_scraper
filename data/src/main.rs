@@ -10,10 +10,13 @@ async fn main() {
 }
 
 pub async fn insert_monthly_stock_bars(symbols: Vec<&str>) {
+    println!("Fetching historical stock data");
     let bars_map = HistoricalBarsQuery::new(symbols, TimeFrame::OneWeek)
         .start("2016-01-01")
         .send()
         .unwrap();
+
+    println!("Finished fetching historical stock data");
 
     let db =
         SqliteDb::connect("sqlite:///Volumes/karrer_ssd/datastores/sqlite/market_data/stocks.db")
@@ -55,6 +58,34 @@ pub async fn insert_monthly_stock_bars(symbols: Vec<&str>) {
                 Trend::Bullish
             };
 
+            let ten_week_high = if index < 10 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 10)..index].iter().map(|bar| bar.h).collect();
+                tindi::find_high(&prices)
+            };
+
+            let ten_week_low = if index < 10 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 10)..index].iter().map(|bar| bar.l).collect();
+                tindi::find_low(&prices)
+            };
+
+            let five_week_high = if index < 5 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 5)..index].iter().map(|bar| bar.h).collect();
+                tindi::find_high(&prices)
+            };
+
+            let five_week_low = if index < 5 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 5)..index].iter().map(|bar| bar.l).collect();
+                tindi::find_low(&prices)
+            };
+
             let next_bar = &bars[index + 1];
             let price_diff = next_bar.c - bar.c;
             let buy_or_sell = if price_diff > 0.0 { 1 } else { 0 };
@@ -78,6 +109,10 @@ pub async fn insert_monthly_stock_bars(symbols: Vec<&str>) {
                 ten_week_sma,
                 ten_week_ema,
                 ten_week_rsi,
+                ten_week_high,
+                ten_week_low,
+                five_week_high,
+                five_week_low,
             )
             .unwrap();
 

@@ -1,5 +1,5 @@
 -- Add migration script here
-CREATE TABLE IF NOT EXISTS monthly_stock_bars (
+CREATE TABLE IF NOT EXISTS daily_stock_bars (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     event_datetime TEXT NOT NULL,
     event_unix_timestamp INTEGER NOT NULL,
@@ -17,7 +17,19 @@ CREATE TABLE IF NOT EXISTS monthly_stock_bars (
     next_frame_trend TEXT NOT NULL,
     next_frame_unix_timestamp INTEGER NOT NULL,
     next_frame_event_datetime TEXT NOT NULL,
-    ten_week_moving_avg REAL NOT NULL,
-    ten_week_rsi REAL NOT NULL,
-    ten_week_ema REAL NOT NULL
+    hundred_day_sma REAL NOT NULL,
+    hundred_day_ema REAL NOT NULL,
+    fifty_day_sma REAL NOT NULL,
+    fifty_day_ema REAL NOT NULL,
+    twenty_day_sma REAL NOT NULL,
+    twenty_day_ema REAL NOT NULL,
+    nine_day_ema REAL NOT NULL,
+    nine_day_sma REAL NOT NULL,
+    fourteen_day_rsi REAL NOT NULL,
+    fifty_day_high REAL NOT NULL,
+    fifty_day_low REAL NOT NULL,
+    hundred_day_high REAL NOT NULL,
+    hundred_day_low REAL NOT NULL,
+    ten_day_high REAL NOT NULL,
+    ten_day_low REAL NOT NULL
 );
