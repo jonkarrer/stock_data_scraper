@@ -1,11 +1,16 @@
 mod watchlist;
 
 use alpaca_api_client::{market_data::stocks::HistoricalBarsQuery, TimeFrame, Trend};
-use database::{SqliteDb, StockBarModelEntry, StockBarRepository};
+use database::{MonthlyStockBarModelEntry, MonthlyStockBarRepository, SqliteDb};
 
 #[tokio::main]
 async fn main() {
-    let bars_map = HistoricalBarsQuery::new(vec!["AAPL", "TSLA"], TimeFrame::OneWeek)
+    let symbols = watchlist::get_all_unique_stock_symbols();
+    insert_monthly_stock_bars(symbols).await;
+}
+
+pub async fn insert_monthly_stock_bars(symbols: Vec<&str>) {
+    let bars_map = HistoricalBarsQuery::new(symbols, TimeFrame::OneWeek)
         .start("2016-01-01")
         .send()
         .unwrap();
@@ -22,6 +27,27 @@ async fn main() {
             if index + 1 == bars.len() {
                 break;
             }
+
+            let ten_week_sma = if index < 10 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 10)..index].iter().map(|bar| bar.c).collect();
+                tindi::simple_moving_average(&prices)
+            };
+
+            let ten_week_ema = if index < 10 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 10)..index].iter().map(|bar| bar.c).collect();
+                tindi::exponential_moving_average(&prices, 10).expect("EMA failed")
+            };
+
+            let ten_week_rsi = if index < 10 {
+                0.0
+            } else {
+                let prices: Vec<f32> = bars[(index - 10)..index].iter().map(|bar| bar.c).collect();
+                tindi::relative_strength_index(&prices)
+            };
 
             let bar_trend = if bar.o > bar.c {
                 Trend::Bearish
@@ -40,16 +66,18 @@ async fn main() {
             };
             let next_frame_event_datetime = &next_bar.t;
 
-            let entry = StockBarModelEntry::new(
+            let entry = MonthlyStockBarModelEntry::new(
                 bar,
                 &symbol,
                 TimeFrame::OneWeek,
-                "tech",
                 bar_trend,
                 buy_or_sell,
                 next_frame_price,
                 next_frame_trend,
                 &next_frame_event_datetime,
+                ten_week_sma,
+                ten_week_ema,
+                ten_week_rsi,
             )
             .unwrap();
 

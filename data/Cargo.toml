@@ -8,4 +8,5 @@ alpaca_api_client = { workspace = true}
 sqlx = {workspace = true}
 chrono = {workspace = true}
 tokio = {workspace = true}
+tindi = {workspace = true}
 database = {path = "../database"}
