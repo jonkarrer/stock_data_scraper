@@ -43,14 +43,22 @@ impl SqliteDb {
             Err(e) => println!("Error: {}", e),
         }
     }
+
+    pub async fn reset_database(uri: &str) -> Result<()> {
+        println!("Resetting database at {}...", uri);
+        sqlx::Sqlite::drop_database(uri).await?;
+        println!("Database reset!");
+        Self::create_new(uri).await?;
+        Ok(())
+    }
 }
 
 impl StockBarRepository for SqliteDb {
     async fn insert_stock_bar(&self, model_entry: &StockBarModelEntry) -> Result<()> {
         sqlx::query(
             r#"
-            INSERT INTO stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, sector)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, sector, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&model_entry.event_datetime)
@@ -64,6 +72,12 @@ impl StockBarRepository for SqliteDb {
         .bind(&model_entry.stock_symbol)
         .bind(&model_entry.timeframe)
         .bind(&model_entry.sector)
+        .bind(&model_entry.bar_trend)
+        .bind(&model_entry.buy_or_sell)
+        .bind(&model_entry.next_frame_price)
+        .bind(&model_entry.next_frame_trend)
+        .bind(&model_entry.next_frame_unix_timestamp)
+        .bind(&model_entry.next_frame_event_datetime)
         .execute(&self.pool).await?;
 
         Ok(())

@@ -8,6 +8,7 @@ use database::SqliteDb;
 pub enum DatabaseCommands {
     CreateDatabase { uri: String },
     TestConnection { uri: String },
+    ResetDatabase { uri: String },
 }
 
 #[derive(Parser)]
@@ -25,6 +26,10 @@ pub async fn run(args: &DatabaseArgs) -> Result<()> {
         DatabaseCommands::TestConnection { uri } => {
             let db = SqliteDb::connect(uri).await?;
             db.test_connection().await;
+            Ok(())
+        }
+        DatabaseCommands::ResetDatabase { uri } => {
+            SqliteDb::reset_database(uri).await?;
             Ok(())
         }
     }

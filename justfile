@@ -3,7 +3,7 @@ add-migration name:
      sqlx migrate add {{name}}
 
 run-migration:
-    export DATABASE_URL=sqlite:///Volumes/karrer_ssd/datastores/sqlite/market_data/stocks.db && sqlx migrate run
+    export DATABASE_URL=sqlite:///Volumes/karrer_ssd/datastores/sqlite/market_data/stocks.db && sqlx migrate run --source database/migrations
 
 revert-migration:
     export DATABASE_URL=sqlite:///Volumes/karrer_ssd/datastores/sqlite/market_data/stocks.db && sqlx migrate revert
@@ -17,3 +17,6 @@ create-db uri:
 
 test-db uri:
     cargo run --bin cli -- database test-connection {{uri}}
+
+reset-db uri:
+    cargo run --bin cli database reset-database {{uri}}

@@ -1,4 +1,4 @@
-use alpaca_api_client::market_data::stocks::StockBar;
+use alpaca_api_client::{market_data::stocks::StockBar, TimeFrame, Trend};
 use anyhow::Result;
 use chrono::DateTime;
 
@@ -15,6 +15,9 @@ pub struct StockBarModel {
     pub stock_symbol: String,
     pub timeframe: String,
     pub sector: String,
+    pub bar_trend: String,
+    pub buy_or_sell: i32,
+    pub next_frame_price: f32,
 }
 
 pub struct StockBarModelEntry {
@@ -29,16 +32,27 @@ pub struct StockBarModelEntry {
     pub stock_symbol: String,
     pub timeframe: String,
     pub sector: String,
+    pub bar_trend: String,
+    pub buy_or_sell: i32,
+    pub next_frame_price: f32,
+    pub next_frame_trend: String,
+    pub next_frame_unix_timestamp: i64,
+    pub next_frame_event_datetime: String,
 }
 
 impl StockBarModelEntry {
     pub fn new(
-        stock_bar: StockBar,
+        stock_bar: &StockBar,
         stock_symbol: &str,
-        timeframe: String,
+        timeframe: TimeFrame,
         sector: &str,
+        bar_trend: Trend,
+        buy_or_sell: i32,
+        next_frame_price: f32,
+        next_frame_trend: Trend,
+        next_frame_event_datetime: &str,
     ) -> Result<Self> {
-        let event_datetime = stock_bar.t;
+        let event_datetime = stock_bar.t.to_string();
         let open_price = stock_bar.o;
         let close_price = stock_bar.c;
         let high_price = stock_bar.h;
@@ -47,6 +61,8 @@ impl StockBarModelEntry {
         let volume_weighted_price = stock_bar.vw;
 
         let (event_datetime, event_unix_timestamp) = Self::format_timestamp(&event_datetime)?;
+        let (next_frame_event_datetime, next_frame_unix_timestamp) =
+            Self::format_timestamp(next_frame_event_datetime)?;
 
         Ok(Self {
             event_datetime,
@@ -58,8 +74,14 @@ impl StockBarModelEntry {
             volume,
             volume_weighted_price,
             stock_symbol: stock_symbol.to_string(),
-            timeframe,
+            timeframe: timeframe.to_string(),
             sector: sector.to_string(),
+            bar_trend: bar_trend.to_string(),
+            buy_or_sell,
+            next_frame_price,
+            next_frame_trend: next_frame_trend.to_string(),
+            next_frame_unix_timestamp,
+            next_frame_event_datetime,
         })
     }
 
