@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["bot", "cli", "data", "database", "training"]
+members = ["cli", "data", "database"]
 
 [workspace.dependencies]
 serde = { version = "1.0.210", features = ["derive"] }
