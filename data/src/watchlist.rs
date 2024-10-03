@@ -139,3 +139,15 @@ pub fn get_all_unique_stock_symbols() -> Vec<&'static str> {
 
     set.into_iter().collect()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_all_unique_stock_symbols() {
+        let symbols = get_all_unique_stock_symbols();
+        dbg!(symbols);
+        assert!(false);
+    }
+}

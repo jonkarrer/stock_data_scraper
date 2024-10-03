@@ -25,11 +25,14 @@ CREATE TABLE IF NOT EXISTS daily_stock_bars (
     twenty_day_ema REAL NOT NULL,
     nine_day_ema REAL NOT NULL,
     nine_day_sma REAL NOT NULL,
-    fourteen_day_rsi REAL NOT NULL,
-    fifty_day_high REAL NOT NULL,
-    fifty_day_low REAL NOT NULL,
     hundred_day_high REAL NOT NULL,
     hundred_day_low REAL NOT NULL,
+    fifty_day_high REAL NOT NULL,
+    fifty_day_low REAL NOT NULL,
     ten_day_high REAL NOT NULL,
-    ten_day_low REAL NOT NULL
+    ten_day_low REAL NOT NULL,
+    fourteen_day_rsi REAL NOT NULL,
+    top_bollinger_band REAL NOT NULL,
+    middle_bollinger_band REAL NOT NULL,
+    bottom_bollinger_band REAL NOT NULL
 );

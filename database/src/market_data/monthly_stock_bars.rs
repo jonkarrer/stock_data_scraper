@@ -130,15 +130,19 @@ impl MonthlyStockBarModelEntry {
 }
 
 pub trait MonthlyStockBarRepository {
-    async fn insert_stock_bar(&self, model_entry: &MonthlyStockBarModelEntry) -> Result<()>;
-    async fn insert_batch_of_stock_bars(
+    async fn insert_monthly_stock_bar(&self, model_entry: &MonthlyStockBarModelEntry)
+        -> Result<()>;
+    async fn insert_batch_of_monthly_stock_bars(
         &self,
         model_entries: &[MonthlyStockBarModelEntry],
     ) -> Result<()>;
 }
 
 impl MonthlyStockBarRepository for SqliteDb {
-    async fn insert_stock_bar(&self, model_entry: &MonthlyStockBarModelEntry) -> Result<()> {
+    async fn insert_monthly_stock_bar(
+        &self,
+        model_entry: &MonthlyStockBarModelEntry,
+    ) -> Result<()> {
         sqlx::query(
             r#"
             INSERT INTO monthly_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, ten_week_moving_avg, ten_week_ema, ten_week_rsi, ten_week_high, ten_week_low, five_week_high, five_week_low)
@@ -173,13 +177,13 @@ impl MonthlyStockBarRepository for SqliteDb {
         Ok(())
     }
 
-    async fn insert_batch_of_stock_bars(
+    async fn insert_batch_of_monthly_stock_bars(
         &self,
         model_entries: &[MonthlyStockBarModelEntry],
     ) -> Result<()> {
         let transaction = self.pool.begin().await?;
         for model in model_entries {
-            self.insert_stock_bar(model).await?;
+            self.insert_monthly_stock_bar(model).await?;
         }
         transaction.commit().await?;
         Ok(())
