@@ -17,13 +17,12 @@ async fn main() {
     // insert_monthly_stock_bars(symbols).await;
     // insert_daily_stock_bars(BATCH_SEVEN.to_vec()).await;
     // insert_fifteen_min_stock_bars(vec!["SO"]).await;
-    for chunk in BATCH_ALL.chunks(4) {
-        insert_monthly_stock_bars(chunk.to_vec()).await;
-        println!("Going to sleep for 1.2 minutes...");
-        thread::sleep(Duration::from_secs_f64(72.0)); // 1.2 minutes = 72 seconds
-        println!("Woke up!");
-    }
-    // insert_hourly_stock_bars(B_ONE.to_vec()).await;
+    // for chunk in BATCH_ALL.chunks(4) {
+    //     insert_hourly_stock_bars(chunk.to_vec()).await;
+    //     println!("Going to sleep for 1 minute...");
+    //     thread::sleep(Duration::from_secs_f64(60.0)); // 1.2 minutes = 72 seconds
+    //     println!("Woke up!");
+    // }
 }
 
 pub async fn insert_monthly_stock_bars(symbols: Vec<&str>) {
@@ -675,41 +674,3 @@ pub async fn insert_fifteen_min_stock_bars(symbols: Vec<&str>) {
         println!("Insertion completed for stock: {}", symbol);
     }
 }
-
-const BATCH_ALL: [&str; 448] = [
-    "MDLZ", "SOFI", "AEE", "SBS", "CMI", "UDR", "MMM", "TTMI", "OGE", "GWW", "DKNG", "LRCX", "SQ",
-    "UI", "KR", "JBHT", "AIG", "IP", "EQT", "CTVA", "VOO", "HON", "CLX", "XLE", "MPC", "SMH",
-    "SCHF", "O", "XME", "ASR", "REG", "ADP", "XLY", "PTEN", "SONY", "FOX", "VUG", "ADM", "HSIC",
-    "CPT", "AES", "ZTS", "JWN", "BLBD", "DG", "SLB", "DTE", "EXC", "GGB", "JBLU", "PBF", "KO",
-    "PM", "PATK", "KEY", "EXR", "PG", "TMO", "DHR", "SWKS", "TDG", "NWE", "LYB", "CEG", "IR",
-    "CAG", "SAVA", "SMID", "BLK", "ECL", "VTR", "GS", "TTWO", "MA", "LYV", "SJM", "FCX", "BSX",
-    "Z", "NSC", "XLB", "C", "DE", "AVB", "SIL", "EIX", "RTX", "CPRT", "UNP", "ETSY", "LUV", "XLRE",
-    "AZO", "ALGN", "EOG", "VEA", "APA", "STLD", "ELS", "ESS", "PANL", "EBR", "BMY", "BEP", "WAT",
-    "AMZN", "SPY", "MRO", "NTES", "AEM", "CCJ", "CDNS", "XLV", "CTAS", "PSLV", "BABA", "SCHW",
-    "ED", "BVN", "HCA", "BMA", "ACA", "BTG", "LMT", "MXL", "FDX", "INTC", "ABBV", "ROST", "SHW",
-    "EVRG", "VDE", "RIVN", "PBR", "IPGP", "BCS", "R", "TM", "VWO", "ARLO", "SHOP", "XOM", "PNW",
-    "XLI", "SLX", "QCOM", "LW", "IQV", "EL", "PFE", "DUK", "ULTA", "AAPL", "SPOT", "WDS", "LLY",
-    "INTU", "V", "IDA", "NHI", "ETN", "NVDA", "ITW", "ROP", "TSLA", "OHI", "COIN", "JNJ", "BIDU",
-    "WEC", "COHU", "GSIT", "ABT", "TMUS", "MSCI", "WPM", "WMT", "FIX", "TD", "SAIA", "BNS", "VHT",
-    "XLF", "NCLH", "AA", "DEO", "CHDN", "HD", "MSFT", "VAW", "CM", "PPG", "EQR", "APD", "VALE",
-    "ISRG", "VYM", "VTI", "MKC", "BMO", "X", "RCL", "CSCO", "UBER", "ARCB", "SAP", "HUBG", "ADSK",
-    "SYM", "SRE", "ASX", "BAP", "WFC", "TECK", "GRMN", "HDB", "PINS", "NTCT", "RLGT", "TME",
-    "WDAY", "ADI", "BBAR", "CAT", "AIRS", "SAVE", "DSKE", "ORLY", "AMD", "PVH", "ASML", "AAL",
-    "GD", "A", "KLAC", "BBY", "VTV", "EW", "BKNG", "MAA", "ROKU", "CHX", "CVX", "LIT", "GIS",
-    "SYK", "TER", "MGEE", "ON", "AVA", "SBAC", "RF", "VB", "KRC", "CMCSA", "BDX", "ADBE", "MS",
-    "DLR", "QQQ", "RY", "XEL", "ITUB", "NOC", "BAX", "RVLV", "MAS", "DRVN", "HL", "MET", "HPQ",
-    "CPB", "IQ", "MO", "SGML", "YPF", "COST", "EXPD", "GPS", "AVY", "KOS", "PAAS", "NEM", "IBM",
-    "TXN", "ORCL", "SWK", "BP", "CHRW", "ENB", "UMC", "TEAM", "TSN", "NEE", "XYL", "LI", "VIS",
-    "WAB", "CL", "IAC", "AWK", "HBM", "XLP", "CLH", "AEP", "ARCH", "LSTR", "PTSI", "VZ", "XLK",
-    "ACGL", "CSX", "MCD", "HUM", "MU", "WM", "MRVL", "AMAT", "DOW", "NXPI", "COF", "EBAY", "POR",
-    "DD", "HSY", "KROS", "CI", "FSLR", "CVLG", "XPO", "XLC", "MRK", "MCHP", "VFH", "OMC", "BKR",
-    "AXP", "CVI", "ARES", "KMI", "SEDG", "SAND", "GLNG", "GILD", "STZ", "VO", "CLF", "CHD", "BCH",
-    "SE", "DLTR", "CVS", "HES", "PH", "IAG", "MDT", "MNST", "WFRD", "AZN", "TXT", "D", "VRTX",
-    "UAL", "MGM", "SMTC", "PEG", "MPLX", "CMC", "REGN", "DIS", "BBD", "CNC", "AMGN", "VCLT", "AME",
-    "DOV", "EA", "ENPH", "WMB", "NUE", "HRL", "SYY", "RMD", "QRVO", "LNT", "PEP", "ARRY", "NKE",
-    "UPS", "CNQ", "ETR", "SNPS", "MPWR", "LVS", "RSG", "NI", "LIN", "VNQ", "GPRE", "PCAR", "GM",
-    "YUM", "FNV", "DELL", "XTN", "KMB", "VPU", "GOOG", "GE", "GGAL", "BTU", "SCCO", "BIIB", "SBUX",
-    "CMS", "TSM", "VIAV", "OXY", "RS", "CNP", "JPM", "LYG", "ESQ", "VLO", "RHP", "IRM", "PSX",
-    "WOR", "EMR", "ALLE", "TPR", "PLTR", "CCEP", "MATX", "REMX", "FANG", "NRG", "KGC", "LOW",
-    "MTCH", "XLU", "AG", "ALK", "DAL", "F", "ARE", "RL", "ODFL",
-];
