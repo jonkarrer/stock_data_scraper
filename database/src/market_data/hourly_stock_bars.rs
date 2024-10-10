@@ -25,7 +25,6 @@ pub struct HourlyStockBarModel {
     pub five_period_sma: f32,
     pub eight_period_sma: f32,
     pub thirteen_period_sma: f32,
-    pub twenty_period_ema: f32,
     pub nine_period_rsi: f32,
     pub bottom_bollinger_band: f32,
     pub middle_bollinger_band: f32,
@@ -58,7 +57,6 @@ pub struct HourlyStockBarModelEntry {
     pub five_period_sma: f32,
     pub eight_period_sma: f32,
     pub thirteen_period_sma: f32,
-    pub twenty_period_ema: f32,
     pub nine_period_rsi: f32,
     pub bottom_bollinger_band: f32,
     pub middle_bollinger_band: f32,
@@ -84,7 +82,6 @@ impl HourlyStockBarModelEntry {
         five_period_sma: f32,
         eight_period_sma: f32,
         thirteen_period_sma: f32,
-        twenty_period_ema: f32,
         nine_period_rsi: f32,
         bottom_bollinger_band: f32,
         middle_bollinger_band: f32,
@@ -128,7 +125,6 @@ impl HourlyStockBarModelEntry {
             five_period_sma,
             eight_period_sma,
             thirteen_period_sma,
-            twenty_period_ema,
             nine_period_rsi,
             bottom_bollinger_band,
             middle_bollinger_band,
@@ -170,8 +166,8 @@ impl HourlyStockBarRepository for SqliteDb {
     async fn insert_hourly_stock_bar(&self, model_entry: &HourlyStockBarModelEntry) -> Result<()> {
         sqlx::query(
             r#"
-            INSERT INTO hourly_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, five_period_sma, eight_period_sma, thirteen_period_sma, twenty_period_ema, nine_period_rsi, bottom_bollinger_band, middle_bollinger_band, top_bollinger_band, twenty_period_high, twenty_period_low, eight_period_high, eight_period_low, five_period_high, five_period_low)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO hourly_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, five_period_sma, eight_period_sma, thirteen_period_sma nine_period_rsi, bottom_bollinger_band, middle_bollinger_band, top_bollinger_band, twenty_period_high, twenty_period_low, eight_period_high, eight_period_low, five_period_high, five_period_low)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&model_entry.event_datetime)
@@ -193,7 +189,6 @@ impl HourlyStockBarRepository for SqliteDb {
         .bind(&model_entry.five_period_sma)
         .bind(&model_entry.eight_period_sma)
         .bind(&model_entry.thirteen_period_sma)
-        .bind(&model_entry.twenty_period_ema)
         .bind(&model_entry.nine_period_rsi)
         .bind(&model_entry.bottom_bollinger_band)
         .bind(&model_entry.middle_bollinger_band)

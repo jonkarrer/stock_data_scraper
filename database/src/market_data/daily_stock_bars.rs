@@ -18,10 +18,11 @@ pub struct DailyStockBarModel {
     pub timeframe: String,
     pub bar_trend: String,
     pub buy_or_sell: i32,
-    pub next_frame_price: f32,
-    pub next_frame_trend: String,
-    pub next_frame_unix_timestamp: i64,
-    pub next_frame_event_datetime: String,
+    pub next_period_price: f32,
+    pub next_period_trend: String,
+    pub next_period_unix_timestamp: i64,
+    pub next_period_event_datetime: String,
+    pub previous_period_trend: String,
     pub hundred_day_sma: f32,
     pub hundred_day_ema: f32,
     pub fifty_day_sma: f32,
@@ -40,6 +41,7 @@ pub struct DailyStockBarModel {
     pub top_bollinger_band: f32,
     pub middle_bollinger_band: f32,
     pub bottom_bollinger_band: f32,
+    pub macd_signal: f32,
 }
 
 pub struct DailyStockBarModelEntry {
@@ -55,10 +57,11 @@ pub struct DailyStockBarModelEntry {
     pub timeframe: String,
     pub bar_trend: String,
     pub buy_or_sell: i32,
-    pub next_frame_price: f32,
-    pub next_frame_trend: String,
-    pub next_frame_unix_timestamp: i64,
-    pub next_frame_event_datetime: String,
+    pub next_period_price: f32,
+    pub next_period_trend: String,
+    pub next_period_unix_timestamp: i64,
+    pub next_period_event_datetime: String,
+    pub previous_period_trend: String,
     pub hundred_day_sma: f32,
     pub hundred_day_ema: f32,
     pub fifty_day_sma: f32,
@@ -77,6 +80,7 @@ pub struct DailyStockBarModelEntry {
     pub top_bollinger_band: f32,
     pub middle_bollinger_band: f32,
     pub bottom_bollinger_band: f32,
+    pub macd_signal: f32,
 }
 
 impl DailyStockBarModelEntry {
@@ -86,9 +90,10 @@ impl DailyStockBarModelEntry {
         timeframe: TimeFrame,
         bar_trend: Trend,
         buy_or_sell: i32,
-        next_frame_price: f32,
-        next_frame_trend: Trend,
-        next_frame_event_datetime: &str,
+        next_period_price: f32,
+        next_period_trend: Trend,
+        next_period_event_datetime: &str,
+        previous_period_trend: Trend,
         hundred_day_sma: f32,
         hundred_day_ema: f32,
         fifty_day_sma: f32,
@@ -107,6 +112,7 @@ impl DailyStockBarModelEntry {
         top_bollinger_band: f32,
         middle_bollinger_band: f32,
         bottom_bollinger_band: f32,
+        macd_signal: f32,
     ) -> Result<Self> {
         let event_datetime = stock_bar.t.to_string();
         let open_price = stock_bar.o;
@@ -117,8 +123,8 @@ impl DailyStockBarModelEntry {
         let volume_weighted_price = stock_bar.vw;
 
         let (event_datetime, event_unix_timestamp) = Self::format_timestamp(&event_datetime)?;
-        let (next_frame_event_datetime, next_frame_unix_timestamp) =
-            Self::format_timestamp(next_frame_event_datetime)?;
+        let (next_period_event_datetime, next_period_unix_timestamp) =
+            Self::format_timestamp(next_period_event_datetime)?;
 
         Ok(Self {
             event_datetime,
@@ -133,10 +139,11 @@ impl DailyStockBarModelEntry {
             timeframe: timeframe.to_string(),
             bar_trend: bar_trend.to_string(),
             buy_or_sell,
-            next_frame_price,
-            next_frame_trend: next_frame_trend.to_string(),
-            next_frame_unix_timestamp,
-            next_frame_event_datetime,
+            next_period_price,
+            next_period_trend: next_period_trend.to_string(),
+            next_period_unix_timestamp,
+            next_period_event_datetime,
+            previous_period_trend: previous_period_trend.to_string(),
             hundred_day_sma,
             hundred_day_ema,
             fifty_day_sma,
@@ -155,6 +162,7 @@ impl DailyStockBarModelEntry {
             top_bollinger_band,
             middle_bollinger_band,
             bottom_bollinger_band,
+            macd_signal,
         })
     }
 
@@ -186,8 +194,8 @@ impl DailyStockBarRepository for SqliteDb {
     async fn insert_daily_stock_bar(&self, model_entry: &DailyStockBarModelEntry) -> Result<()> {
         sqlx::query(
             r#"
-            INSERT INTO daily_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_frame_price, next_frame_trend, next_frame_unix_timestamp, next_frame_event_datetime, hundred_day_sma, hundred_day_ema, fifty_day_sma, fifty_day_ema, twenty_day_sma, twenty_day_ema, nine_day_sma, nine_day_ema, hundred_day_high, hundred_day_low, fifty_day_high, fifty_day_low, ten_day_high, ten_day_low, fourteen_day_rsi, top_bollinger_band, middle_bollinger_band, bottom_bollinger_band)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO daily_stock_bars (event_datetime, event_unix_timestamp, open_price, close_price, high_price, low_price, volume, volume_weighted_price, stock_symbol, timeframe, bar_trend, buy_or_sell, next_period_price, next_period_trend, next_period_unix_timestamp, next_period_event_datetime, previous_period_trend, hundred_day_sma, hundred_day_ema, fifty_day_sma, fifty_day_ema, twenty_day_sma, twenty_day_ema, nine_day_sma, nine_day_ema, hundred_day_high, hundred_day_low, fifty_day_high, fifty_day_low, ten_day_high, ten_day_low, fourteen_day_rsi, top_bollinger_band, middle_bollinger_band, bottom_bollinger_band, macd_signal)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             "#,
         )
         .bind(&model_entry.event_datetime)
@@ -202,10 +210,11 @@ impl DailyStockBarRepository for SqliteDb {
         .bind(&model_entry.timeframe)
         .bind(&model_entry.bar_trend)
         .bind(&model_entry.buy_or_sell)
-        .bind(&model_entry.next_frame_price)
-        .bind(&model_entry.next_frame_trend)
-        .bind(&model_entry.next_frame_unix_timestamp)
-        .bind(&model_entry.next_frame_event_datetime)
+        .bind(&model_entry.next_period_price)
+        .bind(&model_entry.next_period_trend)
+        .bind(&model_entry.next_period_unix_timestamp)
+        .bind(&model_entry.next_period_event_datetime)
+        .bind(&model_entry.previous_period_trend)
         .bind(&model_entry.hundred_day_sma)
         .bind(&model_entry.hundred_day_ema)
         .bind(&model_entry.fifty_day_sma)
@@ -224,6 +233,7 @@ impl DailyStockBarRepository for SqliteDb {
         .bind(&model_entry.top_bollinger_band)
         .bind(&model_entry.middle_bollinger_band)
         .bind(&model_entry.bottom_bollinger_band)
+        .bind(&model_entry.macd_signal)
         .execute(&self.pool).await?;
 
         Ok(())

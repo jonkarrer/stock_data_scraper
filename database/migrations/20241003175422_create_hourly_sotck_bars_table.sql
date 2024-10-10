@@ -20,7 +20,6 @@ CREATE TABLE IF NOT EXISTS hourly_stock_bars (
     five_period_sma REAL NOT NULL,
     eight_period_sma REAL NOT NULL,
     thirteen_period_sma REAL NOT NULL,
-    twenty_period_ema REAL NOT NULL,
     nine_period_rsi REAL NOT NULL,
     bottom_bollinger_band REAL NOT NULL,
     middle_bollinger_band REAL NOT NULL,
